@@ -1,0 +1,10 @@
+tessgzz (Tesseroids project) 1.1-beta
+(local time) Tue Sep  4 23:01:49 2012
+
+Use recursive division of tesseroids: False
+Using GLQ orders: 2 lon / 2 lat / 2 r
+Reading tesseroid model from file tess.txt
+Total of 1 tesseroid(s) read
+Calculating (this may take a while)...
+Calculated on 10000 points in 0.04 seconds
+Done

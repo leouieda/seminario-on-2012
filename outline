@@ -1,0 +1,160 @@
+INTROCUÇÃO
+
+Abundancia de dados com satélites.
+Mais novo é o GOCE.
+Cobertura global.
+
+Permite estudos globais e regionais (áreas extensas).
+Levar em consideração a curvatura da Terra ao modelar áreas grandes.
+Discretizar a Terra em prismas reto não é ideal.
+Os prismas não se encaixam.
+Solução é discretizar a Terra em prismas esféricos (tesseroides).
+O que é um tesseroide.
+As formulas para calcular o efeito do tesseroide já existem: Wild e Asgarheown
+Não há solução analítica.
+Resolve as integrais com um método numérico.
+Expansão em série de Taylor não é boa (Heck e Seitz).
+Utilizar a Quadratura Gauss-Legendre (QGL).
+
+Discretiza o integrando em pontos (nós).
+Os nós são raízes de polinomios de Legendre.
+Faz uma soma ponderada.
+QGL está sujeita a erros de aproximação como todo método numérico.
+Quem investigou o erro foi Ku.
+Mas para prismas retangulares e somente gz.
+Menciona uma regra empírica.
+A distância ao ponto de observação deve ser maior que a distância entre os nos.
+
+Dois jeitos de automatizar o cáculo preciso do efeito do tesseroide.
+Mudar a ordem da QGL quando o ponto de observação está muito perto.
+Fixar a ordem da QGL e dividir o tesseroide em tesseroides menores.
+Assim os nos da QGL ficam mais próximos.
+Li usou esse método.
+Ambas abordagens dependem da regra de Ku.
+Todos usam mas ninguem testou se é válida.
+Testar se essa regra da distância é válida para tesseroides e outras derivadas do potencial.
+
+METODOLOGIA
+
+Dado um tesseroide definido num sistema de coordenadas global.
+O efeito do tesseroide é calculado no ponto P em relação ao sistema local.
+O potencial gravitacional de um tesseroide é X.
+A atração gravitacional e o tensor (Marussi) (Grombein et al., 2010).
+Essas integrais não possuem solução analítica.
+Só em r.
+Resolver com a QGL.
+As integrais viram somatórias.
+Exemplo dos campos de um tesseroide.
+Acurácia depende do número de nos.
+Exemplo de quando fica ruim.
+
+Usei o método de Li para automatizar o cálculo preciso do tesseroide.
+Fixei a ordem da QGL em 2.
+Assim a maior distância entre os nos é aproximadamente a maior dimensão do tesseroide.
+Divido o tesseroide em 8 se o ponto de observação está mais próximo que uma distância limite.
+Isso é feito recursivamente.
+A questão agora é como saber qual a distância limite para o cálculo ser bom.
+Preciso definir um valor de referência para comparar o efeito calculado com QGL ordem 2.
+Escolhi o prisma retangular reto de mesma massa do tesseroide.
+Para tesseroides pequenos e no equador o efeito deve ser parecido.
+Preciso calcular o efeito do prisma em coordenadas esféricas.
+
+CALCULO DO PRISMA EM COORDENADAS ESFÉRICAS
+
+Fórmulas analíticas de Nagy et al (2000).
+Preciso saber as coordenadas do ponto em P no sistema do prisma.
+Formulas do prisma dão o efeito no sistema do prisma.
+Depois preciso rotacionar o efeito calculado para o sistema local do ponto P.
+
+COMPARAÇÃO COM O EFEITO DO PRISMA
+
+Achar uma distância mínima entre o ponto P e o tesseroide para o calculo ficar aceitavel.
+O critério é se a diferença relativa entre prisma e tesseroide fica abaixo de um valor.
+Escolhi o valor de 0.1%.
+Calculei o efeito do prisma e do tesseroide em uma linha radial.
+A altitude ia de 0.01*tamanho a 7*tamanho.
+A linha estava em lon=0.01*tamanho e lat=0.01*tamanho.
+A linha estava deslocada pois o várias derivadas são zero no centro do tesseroide.
+Para que o resultado fique adimensional eu usei a distancia/tamanho.
+A razão distância/tamanho deveria ser a mesma se variar o tamanho do tesseroide.
+Repeti o cáculo para tesseroide de 0.0001 a 0.1 graus.
+
+IMPLEMENTAÇÃO COMPUTACIONAL
+
+Fiz um conjunto de programas para fazer esses cálculos.
+O programa é código aberto (BSD).
+Feito em linguagem C.
+Inclui programas para o cáculo do tesseroide, do prisma em coordenadas esféricas
+e cartesianas e para geração de modelos de tesseroides.
+O programa usa a metodologia de Li e a distância mínima derivada por mim.
+
+CÁLCULO DA ANOMALIA BOUGUER RESIDUAL PARA OS ALPES
+
+O programa Tesseroids foi utilizado para calcular a anomalia Bouguer residual
+para a região dos Alpes.
+Comecei com a anomalia ar-livre do GOCE.
+Fiz a correção topográfica utilizando o DEM ETOPO-1 para obter a anomalia Bouguer.
+Utilizei densidade 2.67 pro continente e 1.03-2.67=-1.64 para os oceanos.
+O efeito da Moho é muito forte.
+Utilizei o modelo da Moho europeia de Grad et al. (2009).
+Explicar como fazer um modelo de tesseroides da Moho.
+Utilizei o nível de refêrencia para a Moho do PREM (35km).
+O contraste de densidade assumido foi de 3.2(manto)-2.9(crosta)=300.
+
+RESULTADOS
+
+DISTÂNCIA MÍNIMA
+
+Figura da comparação do efeito do tesseroide com o prisma.
+Para vários tesseroides.
+A distância mínima varia com a componente.
+A distancia deve ser 2x o tamanho do tesseroide para um erro de 0.1% em gz.
+Já para gx e gy a distância deve ser 3x o tamanho.
+As componentes do tensor também variam.
+Para gxx, gyy e gzz a distância é 3x.
+Já para gxy, gxz e gyz a distância é de 4x.
+
+ANOMALIA BOUGUER RESIDUAL DOS ALPES
+
+Figura da anomalia ar-livre dos Alpes.
+Figura da topografia dos Alpes.
+Anomalia ar-livre tem alta correlação com a topografia.
+Figura do efeito topografico dos Alpes.
+Figura da anomalia Bouguer dos Alpes.
+A anomalia Bouguer possui um efeito negativo muito grande.
+Possui alta correlação com a Moho.
+Figura da Moho.
+Figura com o efeito da Moho.
+Figura da anomalia Bouguer residual.
+Não possui mais correlação com a Moho nem com o terreno.
+Associada a estruturas internas da crosta.
+Anomalias negativas a oeste e positivas a leste.
+Mapa tectonico dos Alpes.
+Podem estar associadas a provincias tectonicas diferentes a oeste e a leste.
+
+CONCLUSÕES
+
+Tesseroides possibilitam a modelagem de campos gravitacionais em coordenadas esféricas de forma eficiente.
+Um jeito de automatizar o calculo preciso é com o método de Li.
+Porém, a distância mínima que deve ser utilizada é diferente da de Ku.
+A distância mínima varia para cada componente.
+A distancia depende da precisão desejada.
+O método e a distância mínima derivada aqui foram implementados no Tesseroids.
+O programa foi utilizado para calcular a anomalia Bouguer residual dos Alpes.
+A anomalia residual não possui correlação com a topografia nem com a Moho.
+A anomalia mostra efeitos que podem estar relacionados a estruturas crustais.
+Os efeitos podem estar associadas a provincias tectonicas diferentes a oeste e a leste.
+
+Métodos de inversão requerem um modelo direto preciso.
+As razões distância/tamanho que obtemos podem ser usadas para automatizar a modelagem direta precisa.
+Isso viabiliza a utilização dos tesseroides para inversão de campos gravitacionais em coordenadas esféricas.
+
+
+CRONOGRAMA
+
+Feito: disciplinas; modelagem direta; revisão do paper mestrado; publicado;
+    resumos para IAG (visita a Carla); submetido SEG e SBGf (continuação do mestrado)
+    colaboração em 2 artigos
+Fazendo: artigo da modelagem direta (com a Carla)
+Futuro: Inversão de corpos com sementes e inversão de relevo
+
